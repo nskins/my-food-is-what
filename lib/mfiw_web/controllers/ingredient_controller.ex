@@ -6,8 +6,12 @@ defmodule MfiwWeb.IngredientController do
 
   action_fallback MfiwWeb.FallbackController
 
-  def index(conn, _params) do
-    ingredients = Ingredients.list_ingredients()
+  def index(conn, params) do
+    search_query = Map.get(params, "search")
+    ingredients = case search_query do
+      nil -> Ingredients.list_ingredients()
+      ingredient_name -> Ingredients.get_ingredients_by_name!(ingredient_name)
+    end
     render(conn, "index.json", ingredients: ingredients)
   end
 
