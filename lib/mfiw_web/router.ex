@@ -19,8 +19,9 @@ defmodule MfiwWeb.Router do
     get "/", PageController, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", MfiwWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", MfiwWeb do
+    pipe_through :api
+
+    resources "/ingredients", IngredientController, except: [:new, :edit]
+  end
 end
