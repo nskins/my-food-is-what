@@ -1,0 +1,1 @@
+http-server ./build --proxy http://localhost:8080? -c-1
