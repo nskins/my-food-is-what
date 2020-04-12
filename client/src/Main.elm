@@ -97,13 +97,19 @@ view model =
   { title = "My Food Is What?!"
   , body =
       [ div
-        [ class "container d-flex justify-content-center align-items-center min-vh-100"
+        [ class "container justify-content-center align-items-center min-vh-100"
         , style "font-family" "Georgia"
-        , style "font-size" "32px" ]
-        [ div [ class "row d-flex align-items-center w-100" ]
-          [ div [ class "nav-links col-sm-6" ]
-            [ if model.route == Index then viewLink About "/about" else viewLink Index "/"
-            ]
+        ]
+        [ div
+          [ class "row text-center align-items-center w-100"
+          ]
+          [ h1 [ class "col-12" ] [ text "My Food Is What?!" ]
+          , div [ class "col-12" ] [ text "Everything you need to know about 'Other Ingredients'" ]
+          ]
+        , div [ class "row text-center align-items-center w-100"
+          ]
+          [ div [ class "col-12" ]
+            [ if model.route == Index then viewLink About "/about" else viewLink Index "/" ]
           ]
         ]
       ]
