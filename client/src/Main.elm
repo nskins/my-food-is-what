@@ -1,9 +1,11 @@
+module Main exposing (main)
+
 import Browser
 import Browser.Navigation as Nav
-import Html exposing (..)
-import Html.Attributes exposing (..)
+import Html exposing (Html, a, div, h1, text)
+import Html.Attributes exposing (class, href, style)
 import Url
-import Url.Parser exposing (Parser, (</>), int, map, oneOf, parse, s, string, top)
+import Url.Parser exposing (Parser, map, oneOf, parse, s, top)
 
 
 
@@ -37,7 +39,7 @@ type alias Model =
   }
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
-init flags url key =
+init _ url key =
   let route = fromUrl url
   in ( Model key route url, Cmd.none )
 
