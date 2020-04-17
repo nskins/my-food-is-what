@@ -1,9 +1,10 @@
 ## Install dependencies:
 
 `elm`: https://github.com/elm/compiler/blob/master/installers/linux/README.md
-`http-server`: https://www.npmjs.com/package/http-server
 
-## Build the website:
+`elm-live`: https://github.com/wking-io/elm-live
+
+## Build static files:
 
 ```bash
 chmod +x build.sh

@@ -1,1 +1,1 @@
-http-server ./build --proxy http://localhost:8080? -c-1
+elm-live src/Main.elm --dir=./build --pushstate -- --output=./build/main.js
