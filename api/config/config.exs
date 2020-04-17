@@ -15,7 +15,7 @@ config :mfiw, MfiwWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "cDSGfgjAVTWVmECs55XHHFnHPg3tg1ASi1dngEZlY+grzphj9uXIGquyqVyLScDJ",
   render_errors: [view: MfiwWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Mfiw.PubSub, adapter: Phoenix.PubSub.PG2],
+  pubsub_server: Mfiw.PubSub,
   live_view: [signing_salt: "pjGUiDCm"]
 
 # Configures Elixir's Logger
