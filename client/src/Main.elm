@@ -2,9 +2,11 @@ module Main exposing (main)
 
 import Browser
 import Browser.Navigation as Nav
-import Html exposing (Html, a, div, h1, input, text)
+import Html exposing (Html, a, button, div, h1, input, span, text)
 import Html.Attributes exposing (class, href, placeholder, style, value)
-import Html.Events exposing (onInput)
+import Html.Events exposing (onClick, onInput)
+import Http exposing (..)
+import Json.Decode exposing (Decoder, list, map2, field, string)
 import Url
 import Url.Parser exposing (Parser, map, oneOf, parse, s, top)
 
@@ -35,6 +37,8 @@ type Route
 
 type alias Model =
   { content : String
+  , error : Maybe (Http.Error)
+  , ingredients : List Ingredient
   , key : Nav.Key
   , route : Route
   , url : Url.Url
@@ -43,14 +47,16 @@ type alias Model =
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init _ url key =
   let route = fromUrl url
-  in ( Model "" key route url, Cmd.none )
+  in ( Model "" Nothing [] key route url, Cmd.none )
 
 
 
 -- UPDATE
 
 type Msg
-  = LinkClicked Browser.UrlRequest
+  = FoundIngredients (Result Http.Error (List Ingredient))
+  | LinkClicked Browser.UrlRequest
+  | SearchIngredient
   | UpdateContent String
   | UrlChanged Url.Url
 
@@ -69,6 +75,13 @@ fromUrl url =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
+    FoundIngredients result ->
+      case result of
+        Ok ingredients ->
+          ( { model | error = Nothing, ingredients = ingredients }, Cmd.none)
+        Err error ->
+          ( { model | error = Just error, ingredients = [] }, Cmd.none)
+
     LinkClicked urlRequest ->
       case urlRequest of
         Browser.Internal url ->
@@ -76,6 +89,8 @@ update msg model =
 
         Browser.External href ->
           ( model, Nav.load href )
+
+    SearchIngredient -> (model, searchIngredients model.content)
 
     UpdateContent content ->
       ( { model
@@ -121,13 +136,37 @@ view model =
         , div [ class "row text-center align-items-center w-100"
           ]
           [ div [ class "col-12" ]
-            [ input [ placeholder "Enter an ingredient...", value model.content, onInput UpdateContent ] []
-            , if model.route == Index then viewLink About "/about" else viewLink Index "/" ]
+            [ span []
+              [ input [ placeholder "Enter an ingredient...", value model.content, onInput UpdateContent ] []
+              , button [ onClick SearchIngredient ] [ text "Search" ]
+              , if model.route == Index then viewLink About "/about" else viewLink Index "/" ]
+            ]
+          , div [ class "col-12" ]
+            [ showSearchResult model.ingredients
+            , showSearchError model.error ]
           ]
         ]
       ]
 
   }
+
+showSearchResult : List Ingredient -> Html Msg
+showSearchResult ingredients =
+  case ingredients of
+    [] -> text "Nothing"
+    (x :: _) -> text x.description
+
+showSearchError : Maybe (Http.Error) -> Html Msg
+showSearchError error =
+  case error of
+    Nothing -> text ""
+    Just (BadUrl url) -> text ("Bad URL: " ++ url)
+    Just (Timeout) -> text "Timeout"
+    Just (NetworkError) -> text "Network error"
+    Just (BadStatus status) -> text ("Bad status: " ++ String.fromInt status)
+    Just (BadBody body) -> text ("Bad body: " ++ body)
+
+
 
 showTitle : Route -> String
 showTitle route =
@@ -140,3 +179,25 @@ showTitle route =
 viewLink : Route -> String -> Html msg
 viewLink route path =
   div [] [ a [ href path ] [ text (showTitle route) ] ]
+
+
+-- HTTP
+
+searchIngredients : String -> Cmd Msg
+searchIngredients query =
+  Http.get
+    { url = "http://localhost:4000/api/ingredients?search=" ++ query
+    , expect = Http.expectJson FoundIngredients searchIngredientsDecoder
+    }
+
+type alias Ingredient =
+  { name : String
+  , description : String
+  }
+
+ingredientDecoder : Decoder Ingredient
+ingredientDecoder =
+  map2 Ingredient (field "name" string) (field "description" string)
+
+searchIngredientsDecoder : Decoder (List Ingredient)
+searchIngredientsDecoder = field "data" (list ingredientDecoder)
