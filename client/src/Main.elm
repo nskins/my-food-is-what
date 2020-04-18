@@ -2,8 +2,9 @@ module Main exposing (main)
 
 import Browser
 import Browser.Navigation as Nav
-import Html exposing (Html, a, div, h1, text)
-import Html.Attributes exposing (class, href, style)
+import Html exposing (Html, a, div, h1, input, text)
+import Html.Attributes exposing (class, href, placeholder, style, value)
+import Html.Events exposing (onInput)
 import Url
 import Url.Parser exposing (Parser, map, oneOf, parse, s, top)
 
@@ -33,7 +34,8 @@ type Route
   | NotFound
 
 type alias Model =
-  { key : Nav.Key
+  { content : String
+  , key : Nav.Key
   , route : Route
   , url : Url.Url
   }
@@ -41,7 +43,7 @@ type alias Model =
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init _ url key =
   let route = fromUrl url
-  in ( Model key route url, Cmd.none )
+  in ( Model "" key route url, Cmd.none )
 
 
 
@@ -49,6 +51,7 @@ init _ url key =
 
 type Msg
   = LinkClicked Browser.UrlRequest
+  | UpdateContent String
   | UrlChanged Url.Url
 
 routeParser : Parser (Route -> a) a
@@ -73,6 +76,13 @@ update msg model =
 
         Browser.External href ->
           ( model, Nav.load href )
+
+    UpdateContent content ->
+      ( { model
+        | content = content
+        }
+      , Cmd.none
+      )
 
     UrlChanged url ->
       ( { model
@@ -111,7 +121,8 @@ view model =
         , div [ class "row text-center align-items-center w-100"
           ]
           [ div [ class "col-12" ]
-            [ if model.route == Index then viewLink About "/about" else viewLink Index "/" ]
+            [ input [ placeholder "Enter an ingredient...", value model.content, onInput UpdateContent ] []
+            , if model.route == Index then viewLink About "/about" else viewLink Index "/" ]
           ]
         ]
       ]
