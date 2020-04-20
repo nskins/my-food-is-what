@@ -122,8 +122,20 @@ subscriptions _ =
 view : Model -> Browser.Document Msg
 view model =
   { title = "My Food Is What?!"
-  , body =
-      [ div
+  , body = myRouteView model
+  }
+
+myRouteView : Model -> List (Html Msg)
+myRouteView model =
+  case model.route of
+    Index -> indexView model
+    About -> []
+    Contact -> []
+    NotFound -> []
+
+indexView : Model -> List (Html Msg)
+indexView model =
+    [ div
         [ class "container justify-content-center align-items-center min-vh-100"
         , style "font-family" "Georgia"
         ]
@@ -147,8 +159,6 @@ view model =
           ]
         ]
       ]
-
-  }
 
 showSearchResult : List Ingredient -> Html Msg
 showSearchResult ingredients =
