@@ -32,7 +32,6 @@ main =
 type Route
   = Index
   | About
-  | Contact
   | NotFound
 
 type alias Model =
@@ -65,7 +64,6 @@ routeParser =
   oneOf
     [ map Index   top
     , map About   (s "about")
-    , map Contact (s "contact")
     ]
 
 fromUrl : Url.Url -> Route
@@ -130,7 +128,6 @@ myRouteView model =
   case model.route of
     Index -> indexView model
     About -> []
-    Contact -> []
     NotFound -> []
 
 indexView : Model -> List (Html Msg)
@@ -183,7 +180,6 @@ showTitle route =
   case route of
     Index ->    "Index"
     About ->    "About"
-    Contact ->  "Contact"
     NotFound -> "Not Found"
 
 viewLink : Route -> String -> Html msg
