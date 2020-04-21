@@ -120,7 +120,13 @@ subscriptions _ =
 view : Model -> Browser.Document Msg
 view model =
   { title = "My Food Is What?!"
-  , body = currentView model
+  , body =
+    [ div
+      [ class "container justify-content-center align-items-center text-center min-vh-100"
+      , style "font-family" "Georgia"
+      ]
+      (currentView model)
+    ]
   }
 
 currentView : Model -> List (Html Msg)
@@ -135,30 +141,25 @@ currentView model =
 
 indexView : Model -> List (Html Msg)
 indexView model =
-    [ div
-        [ class "container justify-content-center align-items-center text-center min-vh-100"
-        , style "font-family" "Georgia"
-        ]
-        [ div
-          [ class "row text-center align-items-center w-100"
-          ]
-          [ h1 [ class "col-12" ] [ text "My Food Is What?!" ]
-          , div [ class "col-12" ] [ text "Everything you need to know about 'Other Ingredients'" ]
-          ]
-        , div [ class "row text-center align-items-center w-100"
-          ]
-          [ div [ class "col-12" ]
-            [ span []
-              [ input [ placeholder "Enter an ingredient...", value model.content, onInput UpdateContent ] []
-              , button [ onClick SearchIngredient ] [ text "Search" ]
-              , if model.route == Index then viewLink About "/about" else viewLink Index "/" ]
-            ]
-          , div [ class "col-12" ]
-            [ showSearchResult model.ingredients
-            , showSearchError model.error ]
-          ]
-        ]
+  [ div
+    [ class "row text-center align-items-center w-100"
+    ]
+    [ h1 [ class "col-12" ] [ text "My Food Is What?!" ]
+    , div [ class "col-12" ] [ text "Everything you need to know about 'Other Ingredients'" ]
+    ]
+  , div [ class "row text-center align-items-center w-100"
+    ]
+    [ div [ class "col-12" ]
+      [ span []
+        [ input [ placeholder "Enter an ingredient...", value model.content, onInput UpdateContent ] []
+        , button [ onClick SearchIngredient ] [ text "Search" ]
+        , if model.route == Index then viewLink About "/about" else viewLink Index "/" ]
       ]
+    , div [ class "col-12" ]
+      [ showSearchResult model.ingredients
+      , showSearchError model.error ]
+    ]
+  ]
 
 showSearchResult : List Ingredient -> Html Msg
 showSearchResult ingredients =
@@ -195,10 +196,7 @@ aboutView model = []
 
 notFoundView : Model -> List (Html Msg)
 notFoundView _ =
-  [ div
-    [ class "container justify-content-center align-items-center text-center min-vh-100"
-    , style "font-family" "Georgia"
-    ]
+  [ div []
     [ text "Sorry, but that page does not exist."
     , viewLink Index "/"
     ]
