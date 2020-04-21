@@ -127,8 +127,8 @@ myRouteView : Model -> List (Html Msg)
 myRouteView model =
   case model.route of
     Index -> indexView model
-    About -> []
-    NotFound -> []
+    About -> aboutView model
+    NotFound -> notFoundView model
 
 indexView : Model -> List (Html Msg)
 indexView model =
@@ -186,6 +186,11 @@ viewLink : Route -> String -> Html msg
 viewLink route path =
   div [] [ a [ href path ] [ text (showTitle route) ] ]
 
+aboutView : Model -> List (Html Msg)
+aboutView model = []
+
+notFoundView : Model -> List (Html Msg)
+notFoundView model = []
 
 -- HTTP
 
