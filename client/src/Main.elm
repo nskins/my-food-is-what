@@ -192,7 +192,11 @@ viewLink route path =
   div [] [ a [ href path ] [ text (showTitle route) ] ]
 
 aboutView : Model -> List (Html Msg)
-aboutView model = []
+aboutView _ =
+  [ div [] [ text "We want to help people to understand the ingredients on their foods' nutrition labels." ]
+  , div [] [ text "See an ingredient with which you're unfamiliar? Try searching for it to learn more!" ]
+  , div [] [ viewLink Index "/" ]
+  ]
 
 notFoundView : Model -> List (Html Msg)
 notFoundView _ =
