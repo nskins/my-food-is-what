@@ -120,15 +120,18 @@ subscriptions _ =
 view : Model -> Browser.Document Msg
 view model =
   { title = "My Food Is What?!"
-  , body = myRouteView model
+  , body = currentView model
   }
 
-myRouteView : Model -> List (Html Msg)
-myRouteView model =
-  case model.route of
-    Index -> indexView model
-    About -> aboutView model
-    NotFound -> notFoundView model
+currentView : Model -> List (Html Msg)
+currentView model =
+  let
+    viewFromRoute =
+      case model.route of
+        Index -> indexView
+        About -> aboutView
+        NotFound -> notFoundView
+  in viewFromRoute model
 
 indexView : Model -> List (Html Msg)
 indexView model =
