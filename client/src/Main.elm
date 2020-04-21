@@ -168,13 +168,17 @@ showSearchResult ingredients =
 
 showSearchError : Maybe (Http.Error) -> Html Msg
 showSearchError error =
-  case error of
-    Nothing -> text ""
-    Just (BadUrl url) -> text ("Bad URL: " ++ url)
-    Just (Timeout) -> text "Timeout"
-    Just (NetworkError) -> text "Network error"
-    Just (BadStatus status) -> text ("Bad status: " ++ String.fromInt status)
-    Just (BadBody body) -> text ("Bad body: " ++ body)
+  let
+    errorText =
+      case error of
+        Nothing -> ""
+        Just (BadUrl url) -> "Bad URL: " ++ url
+        Just (Timeout) -> "Timeout"
+        Just (NetworkError) -> "Network error"
+        Just (BadStatus status) -> "Bad status: " ++ String.fromInt status
+        Just (BadBody body) -> "Bad body: " ++ body
+  in text errorText
+
 
 
 
