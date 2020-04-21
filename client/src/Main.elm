@@ -136,7 +136,7 @@ currentView model =
 indexView : Model -> List (Html Msg)
 indexView model =
     [ div
-        [ class "container justify-content-center align-items-center min-vh-100"
+        [ class "container justify-content-center align-items-center text-center min-vh-100"
         , style "font-family" "Georgia"
         ]
         [ div
@@ -179,9 +179,6 @@ showSearchError error =
         Just (BadBody body) -> "Bad body: " ++ body
   in text errorText
 
-
-
-
 showTitle : Route -> String
 showTitle route =
   case route of
@@ -197,7 +194,15 @@ aboutView : Model -> List (Html Msg)
 aboutView model = []
 
 notFoundView : Model -> List (Html Msg)
-notFoundView model = []
+notFoundView _ =
+  [ div
+    [ class "container justify-content-center align-items-center text-center min-vh-100"
+    , style "font-family" "Georgia"
+    ]
+    [ text "Sorry, but that page does not exist."
+    , viewLink Index "/"
+    ]
+  ]
 
 -- HTTP
 
