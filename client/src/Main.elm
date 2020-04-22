@@ -6,9 +6,10 @@ import Html exposing (Html, a, button, div, h1, input, span, text)
 import Html.Attributes exposing (class, href, placeholder, style, value)
 import Html.Events exposing (onClick, onInput)
 import Http exposing (..)
-import Json.Decode exposing (Decoder, list, map2, field, string)
+import Json.Decode as D exposing (Decoder, list, map2, field)
 import Url
-import Url.Parser exposing (Parser, map, oneOf, parse, s, top)
+import Url.Parser exposing (Parser, (<?>), map, oneOf, parse, s, top)
+import Url.Parser.Query as Query
 
 
 
@@ -32,6 +33,7 @@ main =
 type Route
   = Index
   | About
+  | IngredientSearch (Maybe String)
   | NotFound
 
 type alias Model =
@@ -64,6 +66,7 @@ routeParser =
   oneOf
     [ map Index   top
     , map About   (s "about")
+    , map IngredientSearch (s "ingredients" <?> Query.string "q")
     ]
 
 fromUrl : Url.Url -> Route
@@ -97,6 +100,9 @@ update msg model =
       , Cmd.none
       )
 
+    -- My guess is that we need to do a case statement and
+    -- run the query as a Cmd (searchIngredients model.content - see above)
+    -- when the route is SearchIngredients or whatever.
     UrlChanged url ->
       ( { model
         | route = fromUrl url
@@ -136,6 +142,7 @@ currentView model =
       case model.route of
         Index -> indexView
         About -> aboutView
+        IngredientSearch _ -> ingredientSearchView
         NotFound -> notFoundView
   in viewFromRoute model
 
@@ -185,6 +192,7 @@ showTitle route =
   case route of
     Index ->    "Index"
     About ->    "About"
+    IngredientSearch _ -> "Search"
     NotFound -> "Not Found"
 
 viewLink : Route -> String -> Html msg
@@ -197,6 +205,9 @@ aboutView _ =
   , div [] [ text "See an ingredient with which you're unfamiliar? Try searching for it to learn more!" ]
   , div [] [ viewLink Index "/" ]
   ]
+
+ingredientSearchView : Model -> List (Html Msg)
+ingredientSearchView _ = []
 
 notFoundView : Model -> List (Html Msg)
 notFoundView _ =
@@ -222,7 +233,7 @@ type alias Ingredient =
 
 ingredientDecoder : Decoder Ingredient
 ingredientDecoder =
-  map2 Ingredient (field "name" string) (field "description" string)
+  map2 Ingredient (field "name" D.string) (field "description" D.string)
 
 searchIngredientsDecoder : Decoder (List Ingredient)
 searchIngredientsDecoder = field "data" (list ingredientDecoder)
