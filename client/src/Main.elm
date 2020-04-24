@@ -79,7 +79,7 @@ update msg model =
     FoundIngredients result ->
       case result of
         Ok ingredients ->
-          ( { model | error = Nothing, ingredients = ingredients }, Cmd.none)
+          ( { model | error = Nothing, ingredients = ingredients }, Nav.pushUrl model.key ("/ingredients?q=" ++ model.content) )
         Err error ->
           ( { model | error = Just error, ingredients = [] }, Cmd.none)
 
@@ -91,7 +91,7 @@ update msg model =
         Browser.External href ->
           ( model, Nav.load href )
 
-    SearchIngredient -> (model, Nav.pushUrl model.key ("/ingredients?q=" ++ model.content))
+    SearchIngredient -> (model, searchIngredients model.content)
 
     UpdateContent content ->
       ( { model
@@ -160,7 +160,7 @@ indexView model =
       [ span []
         [ input [ placeholder "Enter an ingredient...", value model.content, onInput UpdateContent ] []
         , button [ onClick SearchIngredient ] [ text "Search" ]
-        , if model.route == Index then viewLink About "/about" else viewLink Index "/" ]
+        , viewLink About "/about" ]
       ]
     , div [ class "col-12" ]
       [ showSearchResult model.ingredients
@@ -208,7 +208,10 @@ aboutView _ =
 
 ingredientSearchView : Model -> List (Html Msg)
 ingredientSearchView model = [
-  div [] [ text ("Did a search for " ++ model.content) ] ]
+  div []
+    [ text ("Searched for " ++ model.content)
+    , showSearchResult model.ingredients
+    , showSearchError model.error ] ]
 
 notFoundView : Model -> List (Html Msg)
 notFoundView _ =
