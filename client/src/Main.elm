@@ -131,7 +131,9 @@ view model =
       [ class "container justify-content-center align-items-center text-center min-vh-100"
       , style "font-family" "Georgia"
       ]
-      (currentView model)
+      [ div [] [ h1 [ class "col-12" ] [ text "My Food Is What?!" ] ]
+      , div [] (currentView model)
+      ]
     ]
   }
 
@@ -151,8 +153,7 @@ indexView model =
   [ div
     [ class "row text-center align-items-center w-100"
     ]
-    [ h1 [ class "col-12" ] [ text "My Food Is What?!" ]
-    , div [ class "col-12" ] [ text "Everything you need to know about 'Other Ingredients'" ]
+    [ div [ class "col-12" ] [ text "Everything you need to know about 'Other Ingredients'" ]
     ]
   , div [ class "row text-center align-items-center w-100"
     ]
