@@ -172,8 +172,8 @@ indexView model =
 showSearchResult : List Ingredient -> Html Msg
 showSearchResult ingredients =
   case ingredients of
-    [] -> text "Nothing"
-    (x :: _) -> text x.description
+    [] -> div [] [ text "No results found." ]
+    (x :: _) -> div [] [ text (x.name ++ ": " ++ x.description) ]
 
 showSearchError : Maybe (Http.Error) -> Html Msg
 showSearchError error =
