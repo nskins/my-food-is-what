@@ -91,7 +91,7 @@ update msg model =
         Browser.External href ->
           ( model, Nav.load href )
 
-    SearchIngredient -> (model, searchIngredients model.content)
+    SearchIngredient -> (model, Nav.pushUrl model.key ("/ingredients?q=" ++ model.content))
 
     UpdateContent content ->
       ( { model
@@ -207,7 +207,8 @@ aboutView _ =
   ]
 
 ingredientSearchView : Model -> List (Html Msg)
-ingredientSearchView _ = []
+ingredientSearchView model = [
+  div [] [ text ("Did a search for " ++ model.content) ] ]
 
 notFoundView : Model -> List (Html Msg)
 notFoundView _ =
