@@ -150,22 +150,16 @@ currentView model =
 
 indexView : Model -> List (Html Msg)
 indexView model =
-  [ div
-    [ class "row text-center align-items-center w-100"
-    ]
-    [ div [ class "col-12" ] [ text "Everything you need to know about 'Other Ingredients'" ]
-    ]
-  , div [ class "row text-center align-items-center w-100"
+  [ div [ class "row text-center align-items-center w-100"
     ]
     [ div [ class "col-12" ]
       [ span []
         [ input [ placeholder "Enter an ingredient...", value model.content, onInput UpdateContent ] []
         , button [ onClick SearchIngredient ] [ text "Search" ]
-        , viewLink About "/about" ]
+        , div [] [ text "Try searching for an ingredient." ]
+        , viewLink "/about" "Learn more"
+        ]
       ]
-    , div [ class "col-12" ]
-      [ showSearchResult model.ingredients
-      , showSearchError model.error ]
     ]
   ]
 
@@ -196,15 +190,15 @@ showTitle route =
     IngredientSearch _ -> "Search"
     NotFound -> "Not Found"
 
-viewLink : Route -> String -> Html msg
-viewLink route path =
-  div [] [ a [ href path ] [ text (showTitle route) ] ]
+viewLink : String -> String -> Html msg
+viewLink path content =
+  div [] [ a [ href path ] [ text content ] ]
 
 aboutView : Model -> List (Html Msg)
 aboutView _ =
   [ div [] [ text "We want to help people to understand the ingredients on their foods' nutrition labels." ]
   , div [] [ text "See an ingredient with which you're unfamiliar? Try searching for it to learn more!" ]
-  , div [] [ viewLink Index "/" ]
+  , div [] [ viewLink "/" "Return to Home Page" ]
   ]
 
 ingredientSearchView : Model -> List (Html Msg)
@@ -218,7 +212,7 @@ notFoundView : Model -> List (Html Msg)
 notFoundView _ =
   [ div []
     [ text "Sorry, but that page does not exist."
-    , viewLink Index "/"
+    , viewLink "/" "Return to Home Page"
     ]
   ]
 
