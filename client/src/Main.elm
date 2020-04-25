@@ -131,7 +131,7 @@ view model =
       [ class "container justify-content-center align-items-center text-center min-vh-100"
       , style "font-family" "Georgia"
       ]
-      [ div [] [ h1 [ class "col-12" ] [ text "My Food Is What?!" ] ]
+      [ div [ style "padding" "15px 0 5px 0" ] [ h1 [ class "col-12" ] [ text "My Food Is What?!" ] ]
       , div [] (currentView model)
       ]
     ]
