@@ -182,14 +182,6 @@ showSearchError error =
         Just (BadBody body) -> "Bad body: " ++ body
   in text errorText
 
-showTitle : Route -> String
-showTitle route =
-  case route of
-    Index ->    "Index"
-    About ->    "About"
-    IngredientSearch _ -> "Search"
-    NotFound -> "Not Found"
-
 viewLink : String -> String -> Html msg
 viewLink path content =
   div [] [ a [ href path ] [ text content ] ]
