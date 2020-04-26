@@ -46,11 +46,29 @@ type alias Model =
   }
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
-init _ url key =
+init _ url key = initCurrentPage url key
+
+updateModel : Url.Url -> Nav.Key -> Route -> Model
+updateModel url key route =
+  let
+    content =
+      case route of
+        IngredientSearch (Just query) -> query
+        _ -> ""
+  in Model content Nothing [] key route url
+
+getRouteCommand : Route -> Cmd Msg
+getRouteCommand route =
+  case route of
+    IngredientSearch (Just query) -> searchIngredients query
+    _ -> Cmd.none
+
+initCurrentPage : Url.Url -> Nav.Key -> (Model, Cmd Msg)
+initCurrentPage url key =
   let route = fromUrl url
-  in ( Model "" Nothing [] key route url, Cmd.none )
-
-
+      newModel = updateModel url key route
+      command = getRouteCommand route
+  in (newModel, command)
 
 -- UPDATE
 
@@ -79,7 +97,7 @@ update msg model =
     FoundIngredients result ->
       case result of
         Ok ingredients ->
-          ( { model | error = Nothing, ingredients = ingredients }, Nav.pushUrl model.key ("/ingredients?q=" ++ model.content) )
+          ( { model | error = Nothing, ingredients = ingredients }, Cmd.none)
         Err error ->
           ( { model | error = Just error, ingredients = [] }, Cmd.none)
 
@@ -91,7 +109,7 @@ update msg model =
         Browser.External href ->
           ( model, Nav.load href )
 
-    SearchIngredient -> (model, searchIngredients model.content)
+    SearchIngredient -> (model, Nav.pushUrl model.key ("/ingredients?q=" ++ model.content) )
 
     UpdateContent content ->
       ( { model
@@ -103,13 +121,8 @@ update msg model =
     -- My guess is that we need to do a case statement and
     -- run the query as a Cmd (searchIngredients model.content - see above)
     -- when the route is SearchIngredients or whatever.
-    UrlChanged url ->
-      ( { model
-        | route = fromUrl url
-        , url = url
-        }
-      , Cmd.none
-      )
+    UrlChanged url -> initCurrentPage url model.key
+
 
 
 
