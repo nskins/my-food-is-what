@@ -163,18 +163,23 @@ currentView model =
 
 indexView : Model -> List (Html Msg)
 indexView model =
-  [ div [ class "row text-center align-items-center w-100"
-    ]
-    [ div [ class "col-12" ]
+  [ div []
+    [ div []
       [ span []
-        [ input [ placeholder "Enter an ingredient...", value model.content, onInput UpdateContent ] []
-        , button [ onClick SearchIngredient ] [ text "Search" ]
+        [ ingredientSearchInput model
         , div [] [ text "Try searching for an ingredient." ]
         , viewLink "/about" "Learn more"
         ]
       ]
     ]
   ]
+
+ingredientSearchInput : Model -> Html Msg
+ingredientSearchInput model =
+  div []
+    [ input [ placeholder "Enter an ingredient...", value model.content, onInput UpdateContent ] []
+    , button [ onClick SearchIngredient ] [ text "Search" ]
+    ]
 
 showSearchResult : List Ingredient -> Html Msg
 showSearchResult ingredients =
@@ -209,7 +214,7 @@ aboutView _ =
 ingredientSearchView : Model -> List (Html Msg)
 ingredientSearchView model = [
   div []
-    [ text ("Searched for " ++ model.content)
+    [ ingredientSearchInput model
     , showSearchResult model.ingredients
     , showSearchError model.error ] ]
 
