@@ -40,15 +40,18 @@ defmodule Mfiw.Ingredients do
   @doc """
   Gets a list of ingredients by a name.
 
-  TODO: this shouldn't fail (no results should return an empty list).
-
   ## Examples
 
       iex> get_ingredients_by_name!("Carrageenan")
       [%Ingredient{}]
 
   """
-  def get_ingredients_by_name!(name), do: [Repo.get_by!(Ingredient, name: name)]
+  def get_ingredients_by_name(name) do
+    case Repo.get_by(Ingredient, name: name) do
+      nil -> []
+      ingredient -> [ingredient]
+    end
+  end
 
   @doc """
   Creates a ingredient.

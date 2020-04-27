@@ -10,7 +10,7 @@ defmodule MfiwWeb.IngredientController do
     search_query = Map.get(params, "search")
     ingredients = case search_query do
       nil -> Ingredients.list_ingredients()
-      ingredient_name -> Ingredients.get_ingredients_by_name!(ingredient_name)
+      ingredient_name -> Ingredients.get_ingredients_by_name(ingredient_name)
     end
     render(conn, "index.json", ingredients: ingredients)
   end
