@@ -14,7 +14,7 @@ config :mfiw,
 config :mfiw, MfiwWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "cDSGfgjAVTWVmECs55XHHFnHPg3tg1ASi1dngEZlY+grzphj9uXIGquyqVyLScDJ",
-  render_errors: [view: MfiwWeb.ErrorView, accepts: ~w(html json)],
+  render_errors: [view: MfiwWeb.ErrorView, accepts: ~w(json)],
   pubsub_server: Mfiw.PubSub,
   live_view: [signing_salt: "pjGUiDCm"]
 
