@@ -1,6 +1,8 @@
 defmodule MfiwWeb.Router do
   use MfiwWeb, :router
 
+  # This is obsolete, but some of these plugs may
+  # be useful for the API - need to do more research.
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -11,12 +13,6 @@ defmodule MfiwWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
-  end
-
-  scope "/", MfiwWeb do
-    pipe_through :browser
-
-    get "/", PageController, :index
   end
 
   scope "/api", MfiwWeb do
