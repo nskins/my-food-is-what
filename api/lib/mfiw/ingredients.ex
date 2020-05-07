@@ -47,10 +47,12 @@ defmodule Mfiw.Ingredients do
 
   """
   def get_ingredients_by_name(name) do
-    case Repo.get_by(Ingredient, name: name) do
-      nil -> []
-      ingredient -> [ingredient]
-    end
+    downcasedName = String.downcase(name)
+
+    Repo.all(
+      from i in Ingredient,
+      where: fragment("lower(?)", i.name) == ^downcasedName
+    )
   end
 
   @doc """
